@@ -1,0 +1,20 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Basic Plan Playbook
+      check_mode: yes # can pass via env
+      register: plan
+      community.general.terraform:
+        project_path: "../terraform/"
+        state: present
+        force_init: true
+
+    - name: Preview the Plan
+      debug: var=plan.stdout_lines
+
+    - name: Apply the Earlier Plan
+      ansible.builtin.command: "{{ plan.command }}"
+      register: apply
+
+    - name: Preview the Apply
+      debug: var=apply.stdout_lines
