@@ -1,7 +1,5 @@
 pipeline {
-  parameters {
-
-  }
+  agent any
 
   stages {
 
@@ -13,17 +11,14 @@ pipeline {
 
     stage('plan') {
       steps {
-        echo "plan..."
+        echo "planing..."
       }
     }
 
     stage('apply') {
-      when {
-         
-      }  
-
+     
       steps {
-        echo "apply..."
+        echo "applying..."
       }
     }
   }
