@@ -12,7 +12,7 @@ pipeline {
 
     stage('plan') {
       steps {
-        ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml'
+        ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml'
       }
     }
 
