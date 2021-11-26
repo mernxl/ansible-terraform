@@ -3,9 +3,6 @@
   vars:
     plan_only: yes
     state: present
-    terraform_tvars: ""
-    variables_files: ""
-    backend_config_files: ""
   become: true
   tasks:
     - name: Copy terraform dir to remotes
@@ -19,9 +16,9 @@
       community.general.terraform:
         project_path: "~/terraform/"
         state: "{{ state }}"
-        variables: "{{ terraform_tvars }}"
-        variables_files: "{{ terraform_tvars_files }}"
-        backend_config_files: "{{ backend_config_files }}"
+        variables: "{{ terraform_tvars | default(omit) }}"
+        variables_files: "{{ terraform_tvars_files | default(omit) }}"
+        backend_config_files: "{{ backend_config_files | default(omit) }}"
         force_init: true
 
     - name: View Output
