@@ -2,9 +2,9 @@ pipeline {
   agent any
 
   parameters {
-    string(name: 'extra-vars', defaultValue: '', description: 'Pass extra-vars to send down to ansible, must be a JSON string without external braces. It will be padded to existing so it should commence with a comma (,). e.g. ,"env": "dev", "build": "one"')
-    string(name: 'plan_extras', defaultValue: '', description: 'Pass in extras to be sent padded in the plan stage')
-    string(name: 'apply_extras', defaultValue: '', description: 'Pass in extras to be sent padded in the apply stage')
+    string(name: 'extra-vars', defaultValue: ' ', description: 'Pass extra-vars to send down to ansible, must be a JSON string without external braces. It will be padded to existing so it should commence with a comma (,). e.g. ,"env": "dev", "build": "one"')
+    string(name: 'plan_extras', defaultValue: ' ', description: 'Pass in extras to be sent padded in the plan stage')
+    string(name: 'apply_extras', defaultValue: ' ', description: 'Pass in extras to be sent padded in the apply stage')
   }
 
   stages {
