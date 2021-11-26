@@ -3,6 +3,9 @@
   vars:
     plan_only: yes
     state: present
+    terraform_tvars:
+    variables_files:
+    backend_config_files:
   become: true
   tasks:
     - name: Copy terraform dir to remotes
