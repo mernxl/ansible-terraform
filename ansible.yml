@@ -1,5 +1,7 @@
 - hosts: ec2_dev
   name: Copies terraform configs to remotes, plans and applies terraform
+  vars:
+    plan_only: yes
   become: true
   tasks:
     - name: Copy terraform dir to remotes
@@ -7,9 +9,9 @@
         dest: ~/terraform/
         src: terraform/
 
-    - name: Plan Task
-      check_mode: yes # can pass via env
-      register: plan
+    - name: Run Terraform Task
+      check_mode: "{{ plan_only }}" # can pass via env yes | no
+      register: terraform
       community.general.terraform:
         project_path: "~/terraform/"
         #backend_config:
@@ -20,19 +22,5 @@
         backend_config_files:
         force_init: true
 
-    - name: Preview the Plan
-      debug: var=plan.stdout_lines
-
-    - name: Apply Task
-      register: apply
-      community.general.terraform:
-        project_path: "~/terraform/"
-        #backend_config:
-        #  region: "eu-north-1"
-        #  bucket: "mernxl--terraform-states"
-        #  key: "ansible-terraform/{{ inventory_hostname }}.tfstate"
-        state: present
-        force_init: true
-
-    - name: Preview the Apply
-      debug: var=apply.stdout_lines
+    - name: View Output
+      debug: var=terraform.stdout_lines
