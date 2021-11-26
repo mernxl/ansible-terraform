@@ -28,6 +28,7 @@ A demo project for deploying terraform to instances using ansible terraform modu
    1. Goto to aws console, get the connection command to ssh into jenkins-server
    1. Follow from https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-20-04#step-4-%E2%80%94-setting-up-jenkins
    1. Configure a `Github Server` in `Configure System` (Use a Personal Access Token as credentials)
+      1. Make sure to check `Manage Hooks`
    1. Install the ansible plugin at Jenkins
    1. Configure ansible at `Global Tools Config`
       1. Name: `ansible`

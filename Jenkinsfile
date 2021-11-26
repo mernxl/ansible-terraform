@@ -12,7 +12,7 @@ pipeline {
 
     stage('plan') {
       steps {
-        ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml', extras: 'plan_only=yes'
+        ansiblePlaybook extras: 'plan_only=yes', colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml', extras: 'plan_only=yes'
       }
     }
 
@@ -26,7 +26,7 @@ pipeline {
 
     stage('apply') {
       steps {
-         ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml', extras: 'plan_only=no'
+         ansiblePlaybook extras: 'plan_only=no', colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml'
       }
     }
   }
