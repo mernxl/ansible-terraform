@@ -1,0 +1,57 @@
+# Contains all services that needs to be available in the target servers, ansible needs terraform considered pre-requisites
+- hosts: all
+  name: Get system informations
+  tasks:
+    - name: Get release type
+      register: system_release
+      shell:
+        cmd: echo "$(lsb_release -cs)"
+
+    - name: Get system architecture
+      register: system_arch
+      shell:
+        cmd: echo "$(dpkg --print-architecture)"
+
+- hosts: all
+  name: Install Terraform on remotes, apt systems
+  become: true
+  tasks: # Install Terraform https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform
+    - name: Add terraform apt-key
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+
+    - name: Add terraform repository
+      apt_repository:
+        repo: "deb [arch={{ system_arch.stdout }}] https://apt.releases.hashicorp.com {{ system_release.stdout }} main"
+        state: present
+
+    - name: Install terraform from apt
+      apt:
+        name: terraform
+        update_cache: true
+        state: present
+
+- hosts: all
+  name: Install docker on apt system
+  become: true
+  tasks:
+    - name: Add Docker apt-key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch={{ system_arch.stdout }}] https://download.docker.com/linux/ubuntu {{ system_release.stdout }} stable"
+        filename: docker
+        state: present
+
+    - name: Install Docker from apt
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        update_cache: true
+        state: present

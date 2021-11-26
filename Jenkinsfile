@@ -5,13 +5,14 @@ pipeline {
 
     stage('test') {
       steps {
-        echo "testing..."
+        sh "cd terraform"
+        sh "terraform validate"
       }
     }  
 
     stage('plan') {
       steps {
-        echo "planing..."
+        ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', installation: 'ansible', inventory: 'ansible_hosts', playbook: 'ansible.yml'
       }
     }
 
