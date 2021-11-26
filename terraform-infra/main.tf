@@ -47,6 +47,8 @@ resource "aws_instance" "jenkins" {
   }
 
   # Install Jenkins according to https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-20-04
+  # Install ansible and ensure community.general.terraform https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html
+  # Install the plugins under the jenkins user, otherwise the community.general.terraform won't be found
   user_data = <<EOF
 #!/bin/bash
 sudo wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
@@ -55,6 +57,26 @@ sudo apt update
 sudo apt install default-jre -y
 sudo apt install jenkins -y
 sudo systemctl start jenkins
+sudo apt install ansible -y
+sudo su jenkins
+ansible-galaxy collection install community.general
 EOF
 }
 
+resource "aws_instance" "targets" {
+  count         = 3
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+  key_name      = aws_key_pair.ec2_keys.key_name
+
+  tags = {
+    Name = "target-server ${count.index}"
+  }
+}
+
+resource "null_resource" "save_ips" {
+  for_each = aws_instance.targets
+  provisioner "local-exec" {
+    command = "echo ${each.value.public_ip} >> ../target-ips.txt"
+  }
+}

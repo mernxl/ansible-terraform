@@ -63,7 +63,7 @@ The `terraform` dir is copied to the remotes before execution, so you can use it
 The stages included in the Jenkins pipeline include;
 
 1. test - Will carry out terraform validate on your configutions
-1. plan - Will run a plan of your terraform configuration and print the output for validations.
+1. plan - Will run a plan of your terraform configuration and print the output for validations. (Check the console output for full log)
 1. approval - Will pause the pipeline and wait for approval before continueing to execute the. You make choose to cancel.
 1. apply - If approved, will apply the change in the terraform
 
@@ -79,5 +79,13 @@ Passing in `extra-vars` as `, "terraform_tvars": { "container_name": "nginx-chan
 
 #### Terraform Backend
 
-- Place your backend files into the terraform/ dir and commit
+- Place your backend files into the `terraform/` dir and commit
 - You can indicate the terraform backend files by passing in the var `backend_config_files`
+
+#### Destroy deployed Terrafom
+
+To destroy existing state, run the the pipeline with the following parameters extra_vars
+
+```
+, "state": "absent"
+```
