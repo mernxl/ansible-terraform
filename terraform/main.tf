@@ -7,6 +7,11 @@ terraform {
   }
 }
 
+variable "container_name" {
+  type    = string
+  default = "nginx-demo"
+}
+
 provider "docker" {}
 
 resource "docker_image" "nginx" {
@@ -16,7 +21,7 @@ resource "docker_image" "nginx" {
 
 resource "docker_container" "nginx" {
   image = docker_image.nginx.latest
-  name  = "tutorial"
+  name  = var.container_name
   ports {
     internal = 80
     external = 80

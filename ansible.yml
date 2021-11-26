@@ -2,6 +2,7 @@
   name: Copies terraform configs to remotes, plans and applies terraform
   vars:
     plan_only: yes
+    state: present
   become: true
   tasks:
     - name: Copy terraform dir to remotes
@@ -14,12 +15,10 @@
       register: terraform
       community.general.terraform:
         project_path: "~/terraform/"
-        #backend_config:
-        #  region: "eu-north-1"
-        #  bucket: "mernxl--terraform-states"
-        #  key: "ansible-terraform/{{ inventory_hostname }}.tfstate"
-        state: present
-        backend_config_files:
+        state: "{{ state }}"
+        variables: "{{ terraform_tvars }}"
+        variables_files: "{{ terraform_tvars_files }}"
+        backend_config_files: "{{ backend_config_files }}"
         force_init: true
 
     - name: View Output
