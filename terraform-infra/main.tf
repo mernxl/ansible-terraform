@@ -1,14 +1,6 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">=3.66.0"
-    }
-  }
-}
-
 provider "aws" {
-  region                  = "eu-north-1"
+  region                  = var.aws_region
+  profile                 = var.aws_creds_profile
   shared_credentials_file = "~/.aws/credentials"
 }
 
@@ -39,7 +31,7 @@ resource "aws_key_pair" "ec2_keys" {
 
 resource "aws_instance" "jenkins" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
+  instance_type = var.aws_ec2_instance_type
   key_name      = aws_key_pair.ec2_keys.key_name
 
   tags = {
@@ -64,19 +56,13 @@ EOF
 }
 
 resource "aws_instance" "targets" {
-  count         = 3
+  count         = 2
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
+  instance_type = var.aws_ec2_instance_type
   key_name      = aws_key_pair.ec2_keys.key_name
 
   tags = {
-    Name = "target-server ${count.index}"
+    Name = "target-server-${count.index}--${count.index % 2 == 0 ? "prod" : "dev"}"
   }
 }
 
-resource "null_resource" "save_ips" {
-  for_each = aws_instance.targets
-  provisioner "local-exec" {
-    command = "echo ${each.value.public_ip} >> ../target-ips.txt"
-  }
-}

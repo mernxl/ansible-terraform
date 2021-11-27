@@ -1,8 +1,15 @@
-[ec2_dev]
-13.51.160.34
-13.49.49.33
+[dev]
+13.48.59.46
 
-[ec2_dev:vars]
+[dev:vars]
+ansible_user=ubuntu
+ansible_connection=ssh
+ansible_ssh_private_key_file=ec2-terra-ansi.pem
+
+[prod]
+13.48.10.238
+
+[prod:vars]
 ansible_user=ubuntu
 ansible_connection=ssh 
-# ansible_ssh_private_key_file=ec2-terra-ansi.pem
+ansible_ssh_private_key_file=ec2-terra-ansi.pem

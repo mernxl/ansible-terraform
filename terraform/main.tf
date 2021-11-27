@@ -1,17 +1,3 @@
-terraform {
-  required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 2.13.0"
-    }
-  }
-}
-
-variable "container_name" {
-  type    = string
-  default = "nginx-demo"
-}
-
 provider "docker" {}
 
 resource "docker_image" "nginx" {
@@ -21,7 +7,8 @@ resource "docker_image" "nginx" {
 
 resource "docker_container" "nginx" {
   image = docker_image.nginx.latest
-  name  = var.container_name
+  name  = "${var.nginx_container_name}--${var.env}"
+
   ports {
     internal = 80
     external = 80

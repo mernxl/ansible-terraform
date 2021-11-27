@@ -2,10 +2,12 @@
 
 A demo project for deploying terraform to instances using ansible terraform module
 
+It provides surport for deploying to multiple environments, based on parameters passed into jenkins.
+
 ## Prerequisites
 
-- AWS account with credentials stored in `./aws/credentials`
-- Configured Basic VPC defaults in eu-north-1
+- AWS account with credentials stored in `./aws/credentials`. Pass in a profile via the `aws_creds_profile` terraform var, defaults to `ansible-terraform`.
+- This account must contain all defualt VPC configurations like defualt security group, subnets etc. Pass in the region in as `aws_region` terraform var.
 
 ## Steps to Setup Environments
 
@@ -25,8 +27,8 @@ A demo project for deploying terraform to instances using ansible terraform modu
 
 1. Populate the `ansible_hosts` file and commit
 
-   1. Fetch Ips of the targets in the `target-ips.txt` file (or from aws console)
-   1. Place them in the `ec2_dev` host group in the `ansible_hosts` file
+   1. Fetch Ips of the targets from aws console
+   1. Place them in the `ansible_hosts` file, those terminating with `dev` under the `dev` host group and the `prod` in prod host group
 
 1. Run the ansible-pre.yml playbook on all target systems
 
@@ -58,7 +60,7 @@ This repository after configuration will automatically carry out the changes in 
 
 Basically just pushing changes to this repository should redeploy your terraform code. It will pause after a plan and you can acknowledge to continue or stop.
 
-The `terraform` dir is copied to the remotes before execution, so you can use it to place backend_config_files, variable_files for later referencing.
+The `terraform` and `live` dir are copied to the remotes before execution, so you can use it to place backend_config_files, variable_files for later referencing.
 
 The stages included in the Jenkins pipeline include;
 
@@ -75,7 +77,7 @@ The stages included in the Jenkins pipeline include;
 - You can also pass in a location to the variables file through `terraform_tvars_files`.
 
 Example
-Passing in `extra-vars` as `, "terraform_tvars": { "container_name": "nginx-changed" }` will change the nginx container name in the remote instances
+Passing in `extra-vars` as `, "terraform_tvars": { "nginx_container_name": "nginx-changed" }` will change the nginx container name in the remote instances
 
 #### Terraform Backend
 

@@ -1,20 +1,26 @@
-- hosts: ec2_dev
+- hosts: all
   name: Copies terraform configs to remotes, plans and applies terraform
   vars:
     plan_only: yes
     state: present
+    env: dev
   become: true
   tasks:
-    - name: Copy terraform dir to remotes
+    - name: Copy base tf module dir to remotes
       copy:
         dest: ~/terraform/
         src: terraform/
+
+    - name: Copy live tf module dir to remotes
+      copy:
+        dest: ~/live/
+        src: "live/{{ env }}/"
 
     - name: Run Terraform Task
       check_mode: "{{ plan_only }}" # can pass via env yes | no
       register: terraform
       community.general.terraform:
-        project_path: "~/terraform/"
+        project_path: "~/live/"
         state: "{{ state }}"
         variables: "{{ terraform_tvars | default(omit) }}"
         variables_files: "{{ terraform_tvars_files | default(omit) }}"
