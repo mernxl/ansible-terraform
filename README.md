@@ -79,6 +79,17 @@ The stages included in the Jenkins pipeline include;
 Example
 Passing in `extra-vars` as `, "terraform_tvars": { "nginx_container_name": "nginx-changed" }` will change the nginx container name in the remote instances
 
+#### Deploying to Different Environments
+
+Deploying to different environments is virtually simple.
+
+1. Add the hosts for that environment (e.g. qa) under a `qa` host group in `ansible_hosts` file
+1. Add a dir, inside of `live` dir with the name of the env, and import the terraform module (see live/dev example)
+1. Add the environment slug as to the choice parameter `env` in the Jenkinsfile
+1. Commit your code and push
+1. At Jenkins, go to run with parameters, select `qa` as `env` and then run.
+1. Make sure to provide the required inputs
+
 #### Terraform Backend
 
 - Place your backend files into the `terraform/` dir and commit
