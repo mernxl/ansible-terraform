@@ -4,6 +4,20 @@ A demo project for deploying terraform to instances using ansible terraform modu
 
 It provides surport for deploying to multiple environments, based on parameters passed into jenkins.
 
+## Background
+
+We wish to apply terraform configurations to a bunch of remote instances using ansible. This is required to be handle continuously using the Jenkins CI platform.
+
+### Folder Structure
+
+- live: Holds entrypoint tf configurations for each target environment.
+- terraform: Holds the terraform configurations for our remote instances
+- terraform-infra: Holds infrastructure terraform code, to deploy our infrastructure, i.e. the jenkins server as well as our target servers.
+- ansible_hosts: Holds our target server hosts, segregated by environment (dev, prod etc)
+- ansible-pre.yml: An ansible playbook to prepare our target instance with dependencies of our terraform providers. e.g. install docker in instance if we need to deploy docker containers in remote
+- ansible.yml: A playbook to handle terraform deployment to remote hosts.
+- Jenkinsfile: Jenkins pipeline configuration, used by jenkins to fufil our goal.
+
 ## Prerequisites
 
 - AWS account with credentials stored in `./aws/credentials`. Pass in a profile via the `aws_creds_profile` terraform var, defaults to `ansible-terraform`.
@@ -32,22 +46,6 @@ It provides surport for deploying to multiple environments, based on parameters 
    1. Fetch Ips of the targets from aws console
    1. Place them in the `ansible_hosts` file, those terminating with `dev` under the `dev` host group and the `prod` in prod host group
 
-1. Run the ansible-pre.yml playbook on all target systems
-
-   1. Make sure the target ips are in `ansible_hosts` file
-   1. Run the following to install requires on target instances
-
-      ```bash
-      ansible-playbook -i ansible_hosts ansible-pre.yml --private-key ec2-terra-ansi.pem
-      ```
-
-      You may encounter an issue running the above command. This may occur when working with multiple unverified sources. Add the
-      following arguments to bypass host verifications.
-
-      ```bash
-      ansible-playbook -i ansible_hosts ansible-pre.yml --private-key ec2-terra-ansi.pem --ssh-common-args '-o StrictHostKeyChecking=no'
-      ```
-
 1. Configure Jenkins server
 
    1. Goto to aws console, get the connection command to ssh into jenkins-server
@@ -65,6 +63,8 @@ It provides surport for deploying to multiple environments, based on parameters 
       1. The Id of the credentials should be `ubuntu-ssh`
    1. Add a multibranch project to this repository
       1. Make sure o ad a branch pointing to this repository
+
+1. Push your changes to the repository
 
 ## Deploying Terraform to Target Servers
 
@@ -97,10 +97,10 @@ Deploying to different environments is virtually simple.
 
 1. Add the hosts for that environment (e.g. qa) under a `qa` host group in `ansible_hosts` file
 1. Add a dir, inside of `live` dir with the name of the env, and import the terraform module (see live/dev example)
-1. Add the environment slug as to the choice parameter `env` in the Jenkinsfile
+1. Add the environment slug as a choice to the `env` parameter in the Jenkinsfile
 1. Commit your code and push
 1. At Jenkins, go to run with parameters, select `qa` as `env` and then run.
-1. Make sure to provide the required inputs
+1. Make sure to other provide the required inputs
 
 #### Terraform Backend
 
