@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   parameters {
-    string(name: 'extra_vars', defaultValue: '', description: 'Pass extra-vars to send down to ansible, must be a JSON string without external braces. It will be padded to existing so it should commence with a comma (,). e.g. ,"env": "dev", "build": "one"')
+    string(name: 'extra_vars', defaultValue: '', description: 'Pass extra-vars to send down to ansible, must be a JSON string without external braces. It will be padded to existing string configuration. e.g. "version": "v1.3", "build": "one"')
     string(name: 'pre_extras', defaultValue: ' ', description: 'Pass in extras to be sent into ansible when runing pre ansible script')
     string(name: 'plan_extras', defaultValue: ' ', description: 'Pass in extras to be sent padded in the plan stage')
     string(name: 'apply_extras', defaultValue: ' ', description: 'Pass in extras to be sent padded in the apply stage')
@@ -27,7 +27,7 @@ pipeline {
 
     stage('plan') {
       steps {
-        ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', limit: "${params.env}", playbook: 'ansible.yml', extras: "${params.plan_extras} --extra-vars '{\"env\": ${params.env}, \"plan_only\":\"yes\" ${params.extra_vars}}' "
+        ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', limit: "${params.env}", playbook: 'ansible.yml', extras: "${params.plan_extras} --extra-vars '{ \"env\": ${params.env}, \"plan_only\":\"yes\", \"terraform_tvars_files\": \"./terraform.tfvars\", ${params.extra_vars}}' "
       }
     }
 
@@ -41,7 +41,7 @@ pipeline {
 
     stage('apply') {
       steps {
-         ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', limit: "${params.env}", playbook: 'ansible.yml', extras: "${params.apply_extras} --extra-vars '{\"env\": ${params.env}, \"plan_only\":\"no\" ${params.extra_vars}}' "
+         ansiblePlaybook colorized: true, credentialsId: 'ubuntu-ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: 'ansible_hosts', limit: "${params.env}", playbook: 'ansible.yml', extras: "${params.apply_extras} --extra-vars '{ \"env\": ${params.env}, \"plan_only\":\"no\", \"terraform_tvars_files\": \"./terraform.tfvars\", ${params.extra_vars}}' "
       }
     }
   }

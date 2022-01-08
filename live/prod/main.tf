@@ -1,3 +1,8 @@
+variable "env" {
+  type        = string
+  description = "Deployment environment name"
+}
+
 variable "nginx_container_name" {
   type        = string
   default     = "nginx"
@@ -7,6 +12,6 @@ variable "nginx_container_name" {
 module "terraform" {
   source = "../../terraform"
 
-  env = "prod"
+  env = var.env
   nginx_container_name = var.nginx_container_name
 }

@@ -5,11 +5,9 @@ A demo project for deploying terraform to instances using ansible terraform modu
 It supports deploying to multiple environments, based on parameters passed in through jenkins.
 
 ## Background
-
-We wish to apply terraform configurations to a bunch of remote instances using ansible. This is required to be handle continuously using the Jenkins CI platform.
+We wish to apply terraform configurations to a bunch of remote instances using ansible. This is required to be handle continuously using the Jenkins CI platform. 
 
 ### Folder Structure
-
 - live: Holds entrypoint tf configurations for each target environment.
 - terraform: Holds the terraform configurations for our remote instances
 - terraform-infra: Holds infrastructure terraform code, to deploy our infrastructure, i.e. the jenkins server as well as our target servers.
@@ -24,6 +22,7 @@ We wish to apply terraform configurations to a bunch of remote instances using a
 - This account must contain all defualt VPC configurations like defualt security group, subnets etc. Pass in the region in as `aws_region` terraform var.
 - Terraform to deploy base infrastructure
 - Anisble for installing docker and other needed tools within the target servers.
+
 
 ## Steps to Setup Environments
 
@@ -89,9 +88,8 @@ The stages included in the Jenkins pipeline are;
 - You can also pass in a location to the variables file through `terraform_tvars_files`.
 
 Example
-
-1. Passing in `extra-vars` as `, "terraform_tvars": { "nginx_container_name": "nginx-changed" }` will change the nginx container name in the remote instances.
-1. For the case with a .tvars file for any environment, run terraform with the following `extra-vars` parameter `, "terraform_tvars_files": "../relative/path/to.tvars" }`
+1. Passing in `extra-vars` as `"terraform_tvars": { "nginx_container_name": "nginx-changed" }` will change the nginx container name in the remote instances.
+1. For the case with a .tvars file for any environment, run terraform with the following `extra-vars` parameter `"terraform_tvars_files": "../relative/path/to.tvars" `
 
 #### Deploying to Different Environments
 
@@ -114,5 +112,5 @@ Deploying to different environments is virtually simple.
 To destroy existing state, run the the pipeline with the following parameters extra_vars
 
 ```
-, "state": "absent"
+"state": "absent"
 ```

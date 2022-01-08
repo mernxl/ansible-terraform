@@ -7,3 +7,6 @@
 
 # .hcl lock files
 **/.terraform.lock.hcl
+
+# don't commit the private keys
+*.pem
